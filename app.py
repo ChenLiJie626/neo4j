@@ -8,6 +8,7 @@ from src.sql import print_Person
 from src.sql import role_Movie
 from src.sql import tag_Movie
 from src.predict import recommend_same_type_movie
+from src.util_json import transform
 
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
@@ -16,7 +17,12 @@ driver = GraphDatabase.driver("bolt://admin.idevlab.cn:7687", auth=("neo4j", "ne
 
 @app.route('/')
 def hello_world():
-    return 'This is the movie backstage system'
+    with driver.session() as session:
+        result = session.run("match p=(P1:Person)-[:role]-()-[]-() where P1.name=~'.*邓超.*' with collect(p) as ps call apoc.convert.toTree(ps)  yield value RETURN value").data()
+
+
+    data = result[0]['value']
+    return jsonify(transform(data))
 
 
 @app.route('/print_Movie/<name>')

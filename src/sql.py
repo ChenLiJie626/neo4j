@@ -2,6 +2,9 @@
 import json
 
 from neo4j import GraphDatabase
+import pandas as pd
+
+from src.util_json import transform
 
 driver = GraphDatabase.driver("bolt://admin.idevlab.cn:7687", auth=("neo4j", "neo5j"))
 
@@ -82,21 +85,32 @@ def genres_Movie_H(tx, genres):
     return result
 
 
+def network_Person(tx, name):
+    for record in tx.run("match path=(P1:Person)-[:role]-()-[]-() where P1.name=~'.*邓超.*'  return path, apoc.path.elements(path) limit 30"):
+        res = record['apoc.path.elements(path)']
+        return res
+
+
+
+
 if __name__ == '__main__':
 
     with driver.session() as session:
-        res = session.read_transaction(genres_Movie_H, "科幻")
-    print(res)
-    res_json = []
-    for item in res:
-        json_temp = {
-            'name': item['name'],
-            'sex': item['sex'],
-            'birthday': item['birthday'],
-            'img': item['img'],
-            'summary': item['summary'],
-            'birthplace': item['birthplace']
-        }
-        res_json.append(json_temp)
-    res_json = json.dumps(res_json, ensure_ascii=False)
-    print(res_json)
+        result = session.run("match p=(P1:Person)-[:role]-()-[]-() where P1.name=~'.*邓超.*' with collect(p) as ps call apoc.convert.toTree(ps)  yield value RETURN value").data()
+
+
+    data = result[0]['value']
+    transform(data)
+    # res_json = []
+    # for item in res:
+    #     json_temp = {
+    #         'name': item['name'],
+    #         'sex': item['sex'],
+    #         'birthday': item['birthday'],
+    #         'img': item['img'],
+    #         'summary': item['summary'],
+    #         'birthplace': item['birthplace']
+    #     }
+    #     res_json.append(json_temp)
+    # res_json = json.dumps(res_json, ensure_ascii=False)
+    # print(res_json)
