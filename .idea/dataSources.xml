@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="movID" uuid="706369bb-abcf-4a33-b7a8-fbdfd600f6cf">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:D:\pycharmProjects\neo4j\movID.db</jdbc-url>
+    </data-source>
+    <data-source source="LOCAL" name="movie" uuid="e2064a27-bba1-4c41-88b7-e684f57ee789">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:D:\pycharmProjects\neo4j\movie.db</jdbc-url>
+    </data-source>
+  </component>
+</project>

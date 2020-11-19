@@ -1,0 +1,5 @@
+tensorflow
+neo4j
+flask
+sqlite
+numpy
