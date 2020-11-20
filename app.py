@@ -171,9 +171,19 @@ def Direct_Person(name):
     return jsonify(res_json)
 
 
-@app.route('/recommend_Movie/<movieID>')
-def Recommend_Movie(movieID):
+@app.route('/recommend_Movie/<name>')
+def Recommend_Movie(name):
+
     try:
+        conn1 = sqlite3.connect('movie.db')
+        c1 = conn1.cursor()
+        sql = "select id from movie where name = ?"
+        name = [name]
+        cursor = c1.execute(sql, name)
+        for row in cursor:
+            movieID = row[0]
+
+
         conn = sqlite3.connect('movID.db')
         c = conn.cursor()
         sql = "select id from MovID where name = ?"
@@ -202,7 +212,7 @@ def Recommend_Movie(movieID):
         return jsonify(res_json)
     except Exception as e:
         print(str(e))
-        return 'not find'
+        return '    find'
 
 
 # @app.route('/movie_Country/<country>')

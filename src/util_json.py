@@ -197,12 +197,9 @@ def get_summary(data):
     return summary
 
 
-global nodes_path
-global edges_path
 c = 0
 
-nodes_path = []
-edges_path = []
+
 
 def dfs(data, cnt):
     global c
@@ -245,6 +242,10 @@ def dfs(data, cnt):
 
 
 def find_path(data):
+    global nodes_path
+    global edges_path
+    nodes_path = []
+    edges_path = []
     dfs(data, 0)
     result = {
         "categories": {

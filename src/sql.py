@@ -109,7 +109,7 @@ def shortestpath(tx,start_name,end_name):
 if __name__ == '__main__':
 
     with driver.session() as session:
-        result = session.read_transaction(shortestpath,'邓超','黄晓')
+        result = session.read_transaction(shortestpath,'周星驰','黄圣依')
     find_path(result)
     # res_json = []
     # for item in res:
