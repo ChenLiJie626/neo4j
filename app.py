@@ -212,7 +212,7 @@ def Recommend_Movie(name):
         return jsonify(res_json)
     except Exception as e:
         print(str(e))
-        return 'not find'
+        return '404'
 
 
 # @app.route('/movie_Country/<country>')
@@ -261,10 +261,9 @@ def Movie_Country(name):
         res = row[0]
         break
     if res is None:
-        return 'not find'
+        return '404'
 
-    actor = []
-    
+
 
 
 if __name__ == '__main__':
