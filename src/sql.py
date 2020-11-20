@@ -4,7 +4,7 @@ import json
 from neo4j import GraphDatabase
 import pandas as pd
 
-from src.util_json import transform
+from src.util_json import transform, find_path
 
 driver = GraphDatabase.driver("bolt://admin.idevlab.cn:7687", auth=("neo4j", "neo5j"))
 
@@ -85,22 +85,32 @@ def genres_Movie_H(tx, genres):
     return result
 
 
-def network_Person(tx, name):
-    for record in tx.run("match path=(P1:Person)-[:role]-()-[]-() where P1.name=~'.*邓超.*'  return path, apoc.path.elements(path) limit 30"):
-        res = record['apoc.path.elements(path)']
-        return res
+def network_Person():
+    with driver.session() as session:
+        result = session.run(
+            "match p=(P1:Person)-[:role]-()-[]-() where P1.name=~'.*邓超.*' with collect(p) as ps call apoc.convert.toTree(ps)  yield value RETURN value").data()
 
+    data = result[0]['value']
+    return transform(data)
 
+def shortestpath(tx,start_name,end_name):
+    # 根据电影返回电影信息
+   data = tx.run("MATCH (p1:Person) where p1.name=~$name1 "
+                         "MATCH (p2:Person )where p2.name=~$name2 "
+                         "MATCH p=shortestpath((p1)-[e:role*..10]-(p2)) "
+                         "where length(p)>=3 "
+                         "with collect(p) as ps "
+                         "call apoc.convert.toTree(ps)  yield value "
+                         "RETURN value", {"name1": ".*" + start_name + ".*","name2": ".*" + end_name + ".*"}).data()[0]['value']
+
+   return data
 
 
 if __name__ == '__main__':
 
     with driver.session() as session:
-        result = session.run("match p=(P1:Person)-[:role]-()-[]-() where P1.name=~'.*邓超.*' with collect(p) as ps call apoc.convert.toTree(ps)  yield value RETURN value").data()
-
-
-    data = result[0]['value']
-    transform(data)
+        result = session.read_transaction(shortestpath,'邓超','黄晓明')
+    find_path(result)
     # res_json = []
     # for item in res:
     #     json_temp = {

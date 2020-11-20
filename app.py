@@ -3,12 +3,12 @@ import sqlite3
 from flask import Flask
 from flask import jsonify
 from neo4j import GraphDatabase
-from src.sql import print_Movie, genres_Movie_H, genres_Movie_L, direct_Movie, direct_Person
+from src.sql import print_Movie, genres_Movie_H, genres_Movie_L, direct_Movie, direct_Person, shortestpath
 from src.sql import print_Person
 from src.sql import role_Movie
 from src.sql import tag_Movie
 from src.predict import recommend_same_type_movie
-from src.util_json import transform
+from src.util_json import transform, find_path
 
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
@@ -24,6 +24,12 @@ def hello_world():
     data = result[0]['value']
     return jsonify(transform(data))
 
+@app.route('/shortest_Path/<start_name>/<end_name>')
+def Shortest_Path(start_name, end_name):
+    with driver.session() as session:
+        result = session.read_transaction(shortestpath,start_name,end_name)
+
+    return jsonify(find_path(result))
 
 @app.route('/print_Movie/<name>')
 def Print_Movie(name):

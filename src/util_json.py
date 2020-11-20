@@ -174,7 +174,8 @@ def transform(data):
             "author": "编剧",
             "director": "导演",
             "role": "演员",
-            "have": "标签"
+            "have": "标签",
+            "movie": "电影",
         },
         "data": {
             "nodes": nodes,
@@ -182,4 +183,62 @@ def transform(data):
         }
     }
 
+    return result
+
+
+global nodes_path
+global edges_path
+
+nodes_path = []
+edges_path = []
+
+def dfs(data, cnt):
+    img = None
+    try:
+        img = data['img']
+        categorie = 'role'
+    except Exception as err:
+        categorie = 'movie'
+        pass
+
+    node = {
+        "label": data['name'],
+        "value": 10,
+        "image": img,
+        "id": data['_id'],
+        "categories": [
+            categorie
+        ],
+        "info": data['summary']
+    }
+    nodes_path.append(node)
+    try:
+        data1 = data['role'][0]
+        dfs(data1, cnt + 1)
+        edge = {
+            "id": cnt,
+            "label": "出演",
+            "from": data['_id'],
+            "to": data1['_id']
+        }
+
+        edges_path.append(edge)
+
+    except Exception as err:
+        print(err)
+        pass
+
+
+def find_path(data):
+    dfs(data, 0)
+    result = {
+        "categories": {
+            "role": "演员",
+            "movie": "电影",
+        },
+        "data": {
+            "nodes": nodes_path,
+            "edges": edges_path
+        }
+    }
     return result
