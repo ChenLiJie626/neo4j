@@ -199,11 +199,13 @@ def get_summary(data):
 
 global nodes_path
 global edges_path
+c = 0
 
 nodes_path = []
 edges_path = []
 
 def dfs(data, cnt):
+    global c
     img = None
     try:
         img = data['img']
@@ -227,8 +229,9 @@ def dfs(data, cnt):
     try:
         for data1 in data['role']:
             dfs(data1, cnt + 1)
+            c = c + 1
             edge = {
-                "id": cnt,
+                "id": c,
                 "label": "出演",
                 "from": data['_id'],
                 "to": data1['_id']
