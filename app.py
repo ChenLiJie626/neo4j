@@ -22,7 +22,7 @@ def hello_world():
     with driver.session() as session:
         result = session.run("match p=(P1:Person)-[:role]-()-[]-() where P1.name=~'.*邓超.*' with collect(p) as ps call apoc.convert.toTree(ps)  yield value RETURN value").data()
 
-
+    # return jsonify(result)
     data = result[0]['value']
     return jsonify(transform(data))
 

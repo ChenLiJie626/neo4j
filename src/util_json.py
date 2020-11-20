@@ -154,6 +154,11 @@ def transform(data):
                 }
                 Id = Id + 1
                 edges.append(edge)
+                summary = None
+                try:
+                    summary = role['summary']
+                except Exception as err:
+                    pass
                 node = {
                     "label": role['name'],
                     "value": 10,
@@ -162,8 +167,9 @@ def transform(data):
                     "categories": [
                         'role'
                     ],
-                    "info": role['summary']
+                    "info": summary
                 }
+                print(role['_id'])
                 nodes.append(node)
         except Exception as err:
             pass
