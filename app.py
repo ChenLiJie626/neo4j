@@ -9,10 +9,12 @@ from src.sql import role_Movie
 from src.sql import tag_Movie
 from src.predict import recommend_same_type_movie
 from src.util_json import transform, find_path
+from flask_cors import CORS
 
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
 driver = GraphDatabase.driver("bolt://admin.idevlab.cn:7687", auth=("neo4j", "neo5j"))
+CORS(app, resources=r'/*')
 
 
 @app.route('/')
