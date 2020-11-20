@@ -212,7 +212,7 @@ def Recommend_Movie(name):
         return jsonify(res_json)
     except Exception as e:
         print(str(e))
-        return '    find'
+        return 'not find'
 
 
 # @app.route('/movie_Country/<country>')
