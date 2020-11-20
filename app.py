@@ -201,12 +201,22 @@ def Recommend_Movie(name):
             for i in iter(item):
                 item = i
                 break
+
+            conn3 = sqlite3.connect('movie.db')
+            c3 = conn3.cursor()
+            sql = "select img from movie where name = ?"
+            name = [item['name']]
+            cursor = c3.execute(sql, name)
+            for row in cursor:
+                img = row[0]
+
             json_temp = {
                 'name': item['name'],
                 'year': item['year'],
                 'rate': item['rate'],
                 'genre': item['genre'],
-                'summary': item['summary']
+                'summary': item['summary'],
+                'img': img
             }
             res_json.append(json_temp)
         return jsonify(res_json)
