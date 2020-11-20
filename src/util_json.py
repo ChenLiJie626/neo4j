@@ -14,7 +14,7 @@ def transform(data):
         "categories": [
             'role'
         ],
-        "info": data['summary']
+        "info": get_summary(data)
     }
     nodes.append(node)
 
@@ -62,7 +62,7 @@ def transform(data):
                     "categories": [
                         'author'
                     ],
-                    "info": author['summary']
+                    "info": get_summary(author)
                 }
                 nodes.append(node)
         except Exception as err:
@@ -87,7 +87,7 @@ def transform(data):
                     "categories": [
                         'director'
                     ],
-                    "info": director['summary']
+                    "info": get_summary(director)
                 }
                 nodes.append(node)
         except Exception as err:
@@ -154,11 +154,7 @@ def transform(data):
                 }
                 Id = Id + 1
                 edges.append(edge)
-                summary = None
-                try:
-                    summary = role['summary']
-                except Exception as err:
-                    pass
+
                 node = {
                     "label": role['name'],
                     "value": 10,
@@ -167,7 +163,7 @@ def transform(data):
                     "categories": [
                         'role'
                     ],
-                    "info": summary
+                    "info": get_summary(role)
                 }
                 print(role['_id'])
                 nodes.append(node)
@@ -190,6 +186,15 @@ def transform(data):
     }
 
     return result
+
+
+def get_summary(data):
+    summary = None
+    try:
+        summary = data['summary']
+    except Exception as err:
+        pass
+    return summary
 
 
 global nodes_path
