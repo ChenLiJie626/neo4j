@@ -222,18 +222,19 @@ def dfs(data, cnt):
         ],
         "info": data['summary']
     }
+    print(data['name'])
     nodes_path.append(node)
     try:
-        data1 = data['role'][0]
-        dfs(data1, cnt + 1)
-        edge = {
-            "id": cnt,
-            "label": "出演",
-            "from": data['_id'],
-            "to": data1['_id']
-        }
+        for data1 in data['role']:
+            dfs(data1, cnt + 1)
+            edge = {
+                "id": cnt,
+                "label": "出演",
+                "from": data['_id'],
+                "to": data1['_id']
+            }
 
-        edges_path.append(edge)
+            edges_path.append(edge)
 
     except Exception as err:
         print(err)
@@ -241,6 +242,7 @@ def dfs(data, cnt):
 
 
 def find_path(data):
+    print(data)
     dfs(data, 0)
     result = {
         "categories": {
@@ -252,4 +254,5 @@ def find_path(data):
             "edges": edges_path
         }
     }
+    print(result)
     return result
