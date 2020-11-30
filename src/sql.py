@@ -12,7 +12,7 @@ driver = GraphDatabase.driver("bolt://admin.idevlab.cn:7687", auth=("neo4j", "ne
 def print_Movie(tx, name):
     # 根据电影返回电影信息
     result = set()
-    for record in tx.run("Match  (a:Movie)  where  a.name =~$name" " return a", {"name": ".*" + name + ".*"}):
+    for record in tx.run("Match  (a:Movie)  where  a.name =~$name" " return a LIMIT 50", {"name": ".*" + name + ".*"}):
         result.add(record["a"])
     return result
 
@@ -20,7 +20,7 @@ def print_Movie(tx, name):
 def print_Person(tx, name):
     # 根据演员名称返回演员信息
     result = set()
-    for record in tx.run("Match  (a:Person)  where  a.name=~$name  " " return a", {"name": ".*" + name + ".*"}):
+    for record in tx.run("Match  (a:Person)  where  a.name=~$name  " " return a LIMIT 50", {"name": ".*" + name + ".*"}):
         result.add(record["a"])
     return result
 
@@ -30,7 +30,7 @@ def role_Movie(tx, name):
     result = set()
     for record in tx.run(
             "Match  (a:Person)-[role]->(b:Movie) where  a.name =~$name"
-            " return b  ORDER BY b.name", {"name": ".*" + name + ".*"}):
+            " return b  ORDER BY b.name LIMIT 50", {"name": ".*" + name + ".*"}):
         result.add(record["b"])
     return result
 
@@ -40,7 +40,7 @@ def tag_Movie(tx, tag):
     result = set()
     for record in tx.run("Match  (a:Movie)-[have]->(b:t)"
                          "where  b.tag=~$tag"
-                         " return  a", {"tag": ".*" + tag + ".*"}):
+                         " return  a LIMIT 50", {"tag": ".*" + tag + ".*"}):
         result.add(record["a"])
     return result
 
@@ -49,7 +49,7 @@ def direct_Movie(tx, d_name):
     # 找导演相关电影
     result = set()
     for record in tx.run("Match  (a:Person)-[director]->(b:Movie) where  a.name=~$d_name"
-                         " return b  ORDER BY b.name", {"d_name": ".*" + d_name + ".*"}):
+                         " return b  ORDER BY b.name LIMIT 50", {"d_name": ".*" + d_name + ".*"}):
         result.add(record["b"])
     return result
 
@@ -69,7 +69,7 @@ def direct_Person(tx, d_name):
     result = set()
     for record in tx.run("Match  (a:Person)-[director]->(b:Movie) where  a.name=~$d_name"
                          " with a,b,director match (c:Person)-[role]->(b:Movie) "
-                         "return c ORDER BY b.name", {"d_name": ".*" + d_name + ".*"}):
+                         "return c ORDER BY b.name LIMIT 50", {"d_name": ".*" + d_name + ".*"}):
         result.add(record["c"])
     return result
 
@@ -98,10 +98,10 @@ def shortestpath(tx,start_name,end_name):
    data = tx.run("MATCH (p1:Person) where p1.name=~$name1 "
                          "MATCH (p2:Person )where p2.name=~$name2 "
                          "MATCH p=shortestpath((p1)-[e:role*..10]-(p2)) "
-                         "where length(p)>=3 "
+                         "where length(p)>=1 "
                          "with collect(p) as ps "
                          "call apoc.convert.toTree(ps)  yield value "
-                         "RETURN value", {"name1": ".*" + start_name + ".*","name2": ".*" + end_name + ".*"}).data()[0]['value']
+                         "RETURN value LIMIT 50", {"name1": ".*" + start_name + ".*","name2": ".*" + end_name + ".*"}).data()[0]['value']
 
    return data
 
