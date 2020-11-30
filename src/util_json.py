@@ -197,24 +197,35 @@ def get_summary(data):
     return summary
 
 
-c = 0
-
-
-
-def dfs(data, cnt):
-    global c
+def get_img(data):
     img = None
     try:
         img = data['img']
-        categorie = 'role'
     except Exception as err:
-        categorie = 'movie'
         pass
+    return img
+
+c = 0
+
+categorie_all = ["genre_r", 'author', "director", "role", "have", "movie"]
+
+def dfs(data, cnt):
+    global c
+    categorie = None
+    for item in categorie_all:
+        try:
+            categorie = data[item]
+            break
+        except Exception as err:
+            pass
+
+
+
 
     node = {
         "label": data['name'],
         "value": 10,
-        "image": img,
+        "image": get_img(data),
         "id": data['_id'],
         "categories": [
             categorie
@@ -223,22 +234,22 @@ def dfs(data, cnt):
     }
 
     nodes_path.append(node)
-    try:
-        for data1 in data['role']:
-            dfs(data1, cnt + 1)
-            c = c + 1
-            edge = {
-                "id": c,
-                "label": "出演",
-                "from": data['_id'],
-                "to": data1['_id']
-            }
-
-            edges_path.append(edge)
-
-    except Exception as err:
-        print(err,666)
-        pass
+    for item in categorie_all:
+        try:
+            for data1 in data[item]:
+                dfs(data1, cnt + 1)
+                c = c + 1
+                edge = {
+                    "id": c,
+                    "label": "出演",
+                    "from": data['_id'],
+                    "to": data1['_id']
+                }
+                edges_path.append(edge)
+            break
+        except Exception as err:
+            print(err,666)
+            pass
 
 
 def find_path(data):
@@ -249,7 +260,11 @@ def find_path(data):
     dfs(data, 0)
     result = {
         "categories": {
+            "genre_r": "喜剧",
+            "author": "编剧",
+            "director": "导演",
             "role": "演员",
+            "have": "标签",
             "movie": "电影",
         },
         "data": {

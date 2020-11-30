@@ -28,15 +28,30 @@ def get_timers():
 
 
 @app.route('/surround_person/<name>')
-def hello_world(name):
+def surround_person(name):
     with driver.session() as session:
         result = session.run(
-            "match p=(P1:Person)-[:role]-()-[]-() where P1.name=~$name with collect(p) as ps call apoc.convert.toTree(ps)  yield value RETURN value LIMIT 100",
+            "match p=(P1:Person)-[:role]-()-[]-() where P1.name=~$name with collect(p) as ps call apoc.convert.toTree(ps)  "
+            "yield value RETURN value LIMIT 100",
             {"name": ".*" + name + ".*"}).data()
 
     # return jsonify(result)
     data = result[0]['value']
     return jsonify(transform(data))
+
+
+@app.route('/surround_movie/<name>')
+def surround_movie(name):
+    with driver.session() as session:
+        result = session.run(
+            "match p=(P1:Person)-[:role]-()-[]-() where P1.name=~$name with collect(p) as ps call apoc.convert.toTree(ps)  "
+            "yield value RETURN value LIMIT 100",
+            {"name": ".*" + name + ".*"}).data()
+
+    # return jsonify(result)
+    data = result[0]['value']
+    return jsonify(transform(data))
+
 
 
 @app.route('/shortest_Path/<start_name>/<end_name>')

@@ -97,8 +97,7 @@ def shortestpath(tx,start_name,end_name):
     # 根据电影返回电影信息
    data = tx.run("MATCH (p1:Person) where p1.name=~$name1 "
                          "MATCH (p2:Person )where p2.name=~$name2 "
-                         "MATCH p=shortestpath((p1)-[e:role*..10]-(p2)) "
-                         "where length(p)>=1 "
+                         "MATCH p=shortestpath((p1)-[*..10]-(p2)) "
                          "with collect(p) as ps "
                          "call apoc.convert.toTree(ps)  yield value "
                          "RETURN value LIMIT 50", {"name1": ".*" + start_name + ".*","name2": ".*" + end_name + ".*"}).data()[0]['value']
