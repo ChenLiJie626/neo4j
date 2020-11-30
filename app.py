@@ -1,7 +1,9 @@
 import json
+import os
+import pickle
 import sqlite3
 
-from flask import Flask,request
+from flask import Flask, request
 import flask
 from flask import jsonify
 from neo4j import GraphDatabase
@@ -18,26 +20,32 @@ app.config['JSON_AS_ASCII'] = False
 driver = GraphDatabase.driver("bolt://admin.idevlab.cn:7687", auth=("neo4j", "neo5j"))
 CORS(app, resources=r'/*')
 
+
 @app.route('/timers', methods=["POST"])
 def get_timers():
     print(json.loads(request.get_data(as_text=True)))
-    return jsonify({'data':3453543,'status':True})
+    return jsonify({'data': 3453543, 'status': True})
+
 
 @app.route('/surround_person/<name>')
 def hello_world(name):
     with driver.session() as session:
-        result = session.run("match p=(P1:Person)-[:role]-()-[]-() where P1.name=~$name with collect(p) as ps call apoc.convert.toTree(ps)  yield value RETURN value LIMIT 100",{"name": ".*" + name + ".*"}).data()
+        result = session.run(
+            "match p=(P1:Person)-[:role]-()-[]-() where P1.name=~$name with collect(p) as ps call apoc.convert.toTree(ps)  yield value RETURN value LIMIT 100",
+            {"name": ".*" + name + ".*"}).data()
 
     # return jsonify(result)
     data = result[0]['value']
     return jsonify(transform(data))
 
+
 @app.route('/shortest_Path/<start_name>/<end_name>')
 def Shortest_Path(start_name, end_name):
     with driver.session() as session:
-        result = session.read_transaction(shortestpath,start_name,end_name)
+        result = session.read_transaction(shortestpath, start_name, end_name)
 
     return jsonify(find_path(result))
+
 
 @app.route('/print_Movie/<name>')
 def Print_Movie(name):
@@ -179,7 +187,6 @@ def Direct_Person(name):
 
 @app.route('/recommend_Movie/<name>')
 def Recommend_Movie(name):
-
     try:
         conn1 = sqlite3.connect('movie.db')
         c1 = conn1.cursor()
@@ -188,13 +195,12 @@ def Recommend_Movie(name):
         cursor = c1.execute(sql, name)
         for row in cursor:
             movieID = row[0]
-
-
-        conn = sqlite3.connect('movID.db')
+            break
+        conn = sqlite3.connect('movID_2.db')
         c = conn.cursor()
-        sql = "select id from MovID where name = ?"
+        sql = "select id from MovID_2 where name = ?"
         movieID = [movieID]
-        cursor = c.execute(sql,movieID)
+        cursor = c.execute(sql, movieID)
         for row in cursor:
             movieID = row[0]
 
@@ -227,7 +233,6 @@ def Recommend_Movie(name):
             res_json.append(json_temp)
         return jsonify(res_json)
     except Exception as e:
-        print(str(e))
         return '404'
 
 
