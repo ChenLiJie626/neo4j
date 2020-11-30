@@ -1,6 +1,8 @@
+import json
 import sqlite3
 
-from flask import Flask
+from flask import Flask,request
+import flask
 from flask import jsonify
 from neo4j import GraphDatabase
 from src.sql import print_Movie, genres_Movie_H, genres_Movie_L, direct_Movie, direct_Person, shortestpath
@@ -16,11 +18,15 @@ app.config['JSON_AS_ASCII'] = False
 driver = GraphDatabase.driver("bolt://admin.idevlab.cn:7687", auth=("neo4j", "neo5j"))
 CORS(app, resources=r'/*')
 
+@app.route('/timers', methods=["POST"])
+def get_timers():
+    print(json.loads(request.get_data(as_text=True)))
+    return jsonify({'data':3453543,'status':True})
 
-@app.route('/')
-def hello_world():
+@app.route('/surround_person/<name>')
+def hello_world(name):
     with driver.session() as session:
-        result = session.run("match p=(P1:Person)-[:role]-()-[]-() where P1.name=~'.*邓超.*' with collect(p) as ps call apoc.convert.toTree(ps)  yield value RETURN value LIMIT 300").data()
+        result = session.run("match p=(P1:Person)-[:role]-()-[]-() where P1.name=~$name with collect(p) as ps call apoc.convert.toTree(ps)  yield value RETURN value LIMIT 100",{"name": ".*" + name + ".*"}).data()
 
     # return jsonify(result)
     data = result[0]['value']
@@ -274,6 +280,19 @@ def Movie_Country(name):
         return '404'
 
 
+@app.route('/user/login/')
+def user():
+    data = {
+        'userName': 'admin',
+        'name': '@cname',
+        'age|1-100': 100,
+        'birthday': '@date("yyyy-MM-dd")',
+        'city': '@city(true)',
+    }
+    return jsonify({
+        'status': True,
+        'data': data
+    })
 
 
 if __name__ == '__main__':
