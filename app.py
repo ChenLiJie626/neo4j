@@ -40,13 +40,12 @@ def surround_person(name):
     return jsonify(transform(data))
 
 
-@app.route('/surround_movie/<name>')
-def surround_movie(name):
+@app.route('/surround_movie/<id>')
+def surround_movie(id):
     with driver.session() as session:
         result = session.run(
-            "match p=(P1:Person)-[:role]-()-[]-() where P1.name=~$name with collect(p) as ps call apoc.convert.toTree(ps)  "
-            "yield value RETURN value LIMIT 100",
-            {"name": ".*" + name + ".*"}).data()
+            "match p=(P1:Movie)-[]-() where P1.id=$id with collect(p) as ps call apoc.convert.toTree(ps)  "
+            "yield value RETURN value LIMIT 100", {"id": id}).data()
 
     # return jsonify(result)
     data = result[0]['value']
