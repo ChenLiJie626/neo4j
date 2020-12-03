@@ -1,7 +1,6 @@
 tensorflow
 neo4j
 flask
-sqlite
 numpy
 pandas
 flask_cors
