@@ -1,5 +1,4 @@
 FROM python:3.7.9-stretch
-RUN apt-get -y update
 RUN mkdir -p /app
 WORKDIR /app
 COPY requirements.txt /app/
