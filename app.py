@@ -27,8 +27,8 @@ def get_timers():
     return jsonify({'data': 3453543, 'status': True})
 
 
-@app.route('/surround_person/<name>')
-def surround_person(name):
+@app.route('/surround_person_name/<name>')
+def surround_person_name(name):
     with driver.session() as session:
         result = session.run(
             "match p=(P1:Person)-[:role]-()-[]-() where P1.name=~$name with collect(p) as ps call apoc.convert.toTree(ps)  "
@@ -40,8 +40,21 @@ def surround_person(name):
     return jsonify(transform(data))
 
 
-@app.route('/surround_movie/<id>')
-def surround_movie(id):
+@app.route('/surround_person_id/<id>')
+def surround_person_id(id):
+    with driver.session() as session:
+        result = session.run(
+            "match p=(P1:Person)-[:role]-()-[]-() where P1.id=~$id with collect(p) as ps call apoc.convert.toTree(ps)  "
+            "yield value RETURN value LIMIT 100",
+            {"id": id}).data()
+
+    # return jsonify(result)
+    data = result[0]['value']
+    return jsonify(transform(data))
+
+
+@app.route('/surround_movie_id/<id>')
+def surround_movie_id(id):
     with driver.session() as session:
         result = session.run(
             "match p=(P1:Movie)-[]-() where P1.id=$id with collect(p) as ps call apoc.convert.toTree(ps)  "
@@ -52,6 +65,16 @@ def surround_movie(id):
     return jsonify(transform(data))
 
 
+@app.route('/surround_movie_name/<name>')
+def surround_movie_name(name):
+    with driver.session() as session:
+        result = session.run(
+            "match p=(P1:Movie)-[]-() where P1.name=$name with collect(p) as ps call apoc.convert.toTree(ps)  "
+            "yield value RETURN value LIMIT 100", {"name": name}).data()
+
+    # return jsonify(result)
+    data = result[0]['value']
+    return jsonify(transform(data))
 
 @app.route('/shortest_Path/<start_name>/<end_name>')
 def Shortest_Path(start_name, end_name):
