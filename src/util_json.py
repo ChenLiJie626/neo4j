@@ -365,7 +365,7 @@ def dfs(data, categorie):
                 c = c + 1
                 edge = {
                     "id": c,
-                    "label": "出演",
+                    "label": item,
                     "from": data['_id'],
                     "to": data1['_id']
                 }
