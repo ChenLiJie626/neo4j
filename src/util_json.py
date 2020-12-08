@@ -146,7 +146,7 @@ def transform(data):
     for movie in movies:
         edge = {
             "id": Id,
-            "label": "位于",
+            "label": "出演",
             "from": data['_id'],
             "to": movie['_id']
         }
