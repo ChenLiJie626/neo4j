@@ -52,6 +52,29 @@ def surround_person_id(id):
     data = result[0]['value']
     return jsonify(transform(data))
 
+@app.route('/get_person_name/<id>')
+def get_person_name(id):
+    with driver.session() as session:
+        result = session.run(
+            "match p=(P1:Person) where P1.id=~$id   "
+            " RETURN p",
+            {"id": id}).data()
+
+    # return jsonify(result)
+    data = result[0]['p']
+    return jsonify((data))
+
+@app.route('/get_movie_name/<id>')
+def get_movie_name(id):
+    with driver.session() as session:
+        result = session.run(
+            "match p=(P1:Movie) where P1.id=~$id   "
+            " RETURN p",
+            {"id": id}).data()
+
+    # return jsonify(result)
+    data = result[0]['p']
+    return jsonify((data))
 
 @app.route('/surround_movie_id/<id>')
 def surround_movie_id(id):
