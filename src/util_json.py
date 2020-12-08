@@ -10,7 +10,7 @@ def transform(data):
         "image": get_img(data),
         "id": data['_id'],
         "categories": [
-            'role'
+            data['_type']
         ],
         "info": get_summary(data)
     }
@@ -33,7 +33,7 @@ def transform(data):
                 "image": author['img'],
                 "id": author['_id'],
                 "categories": [
-                    'author'
+                    author['_type']
                 ],
                 "info": get_summary(author)
             }
@@ -58,7 +58,7 @@ def transform(data):
                 "image": director['img'],
                 "id": director['_id'],
                 "categories": [
-                    'director'
+                    director['_type']
                 ],
                 "info": get_summary(director)
             }
@@ -83,7 +83,7 @@ def transform(data):
                 "image": None,
                 "id": genre_r['_id'],
                 "categories": [
-                    'genre_r'
+                    genre_r['_type']
                 ],
                 "info": None
             }
@@ -108,7 +108,7 @@ def transform(data):
                 "image": None,
                 "id": have['_id'],
                 "categories": [
-                    'have'
+                    have['_type']
                 ],
                 "info": None
             }
@@ -134,7 +134,7 @@ def transform(data):
                 "image": role['img'],
                 "id": role['_id'],
                 "categories": [
-                    'role'
+                    role['_type']
                 ],
                 "info": get_summary(role)
             }
@@ -158,7 +158,7 @@ def transform(data):
             "image": get_img(movie),
             "id": movie['_id'],
             "categories": [
-                'movie'
+                movie['_type']
             ],
             "info": get_summary(movie)
         }
@@ -181,7 +181,7 @@ def transform(data):
                     "image": author['img'],
                     "id": author['_id'],
                     "categories": [
-                        'author'
+                        author['_type']
                     ],
                     "info": get_summary(author)
                 }
@@ -206,7 +206,7 @@ def transform(data):
                     "image": director['img'],
                     "id": director['_id'],
                     "categories": [
-                        'director'
+                        director['_type']
                     ],
                     "info": get_summary(director)
                 }
@@ -231,7 +231,7 @@ def transform(data):
                     "image": None,
                     "id": genre_r['_id'],
                     "categories": [
-                        'genre_r'
+                        genre_r['_type']
                     ],
                     "info": None
                 }
@@ -256,7 +256,7 @@ def transform(data):
                     "image": None,
                     "id": have['_id'],
                     "categories": [
-                        'have'
+                        have['_type']
                     ],
                     "info": None
                 }
@@ -282,7 +282,7 @@ def transform(data):
                     "image": role['img'],
                     "id": role['_id'],
                     "categories": [
-                        'role'
+                        role['_type']
                     ],
                     "info": get_summary(role)
                 }
@@ -292,12 +292,10 @@ def transform(data):
 
     result = {
         "categories": {
-            "genre_r": "喜剧",
-            "author": "编剧",
-            "director": "导演",
+            "Person": "人",
             "role": "演员",
-            "have": "标签",
-            "movie": "电影",
+            "t": "标签",
+            "genres": "类型",
         },
         "data": {
             "nodes": nodes,
