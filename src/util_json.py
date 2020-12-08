@@ -9,6 +9,7 @@ def transform(data):
         "value": 10,
         "image": get_img(data),
         "id": data['_id'],
+        "db_id": data['id'],
         "categories": [
             data['_type']
         ],
@@ -31,6 +32,7 @@ def transform(data):
                 "label": author['name'],
                 "value": 10,
                 "image": author['img'],
+                "db_id": author['id'],
                 "id": author['_id'],
                 "categories": [
                     author['_type']
@@ -57,6 +59,7 @@ def transform(data):
                 "value": 10,
                 "image": director['img'],
                 "id": director['_id'],
+                "db_id": director['id'],
                 "categories": [
                     director['_type']
                 ],
@@ -132,6 +135,7 @@ def transform(data):
                 "label": role['name'],
                 "value": 10,
                 "image": role['img'],
+                "db_id": role['id'],
                 "id": role['_id'],
                 "categories": [
                     role['_type']
@@ -156,6 +160,7 @@ def transform(data):
             "label": movie['name'],
             "value": 10,
             "image": get_img(movie),
+            "db_id": movie['id'],
             "id": movie['_id'],
             "categories": [
                 movie['_type']
@@ -179,6 +184,7 @@ def transform(data):
                     "label": author['name'],
                     "value": 10,
                     "image": author['img'],
+                    "db_id": author['id'],
                     "id": author['_id'],
                     "categories": [
                         author['_type']
@@ -204,6 +210,7 @@ def transform(data):
                     "label": director['name'],
                     "value": 10,
                     "image": director['img'],
+                    "db_id": director['id'],
                     "id": director['_id'],
                     "categories": [
                         director['_type']
@@ -281,6 +288,7 @@ def transform(data):
                     "value": 10,
                     "image": role['img'],
                     "id": role['_id'],
+                    "db_id": role['id'],
                     "categories": [
                         role['_type']
                     ],
@@ -338,6 +346,15 @@ c = 0
 
 categorie_all = ["genre_r", 'author', "director", "role", "have", "movie"]
 
+
+def get_id(data):
+    id = None
+    try:
+        id = data['id']
+    except Exception as err:
+        pass
+    return id
+
 def dfs(data, categorie):
     global c
 
@@ -347,6 +364,7 @@ def dfs(data, categorie):
         "value": 10,
         "image": get_img(data),
         "id": data['_id'],
+        "db_id":get_id(data),
         "categories": [
             data['_type']
         ],
