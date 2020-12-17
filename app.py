@@ -12,7 +12,7 @@ from src.sql import print_Person
 from src.sql import role_Movie
 from src.sql import tag_Movie
 from src.predict import recommend_same_type_movie
-from src.util_json import transform, find_path
+from src.util_json import  find_path
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -21,7 +21,7 @@ driver = GraphDatabase.driver("bolt://admin.idevlab.cn:7687", auth=("neo4j", "ne
 CORS(app, resources=r'/*')
 
 
-@app.route('/timers', methods=["POST"])
+@app.route('/sub/timers', methods=["POST"])
 def get_timers():
     print(json.loads(request.get_data(as_text=True)))
     return jsonify({'data': 3453543, 'status': True})
@@ -31,26 +31,26 @@ def get_timers():
 def surround_person_name(name):
     with driver.session() as session:
         result = session.run(
-            "match p=(P1:Person)-[:role]-()-[]-() where P1.name=~$name with collect(p) as ps call apoc.convert.toTree(ps)  "
+            "match p=(P1:Person)-[]-()-[:have]-() where P1.name=~$name with collect(p) as ps call apoc.convert.toTree(ps)  "
             "yield value RETURN value LIMIT 100",
             {"name": ".*" + name + ".*"}).data()
 
     # return jsonify(result)
     data = result[0]['value']
-    return jsonify(transform(data))
+    return jsonify(find_path(data))
 
 
 @app.route('/surround_person_id/<id>')
 def surround_person_id(id):
     with driver.session() as session:
         result = session.run(
-            "match p=(P1:Person)-[:role]-()-[]-() where P1.id=~$id with collect(p) as ps call apoc.convert.toTree(ps)  "
+            "match p=(P1:Person)-[]-()-[:have]-() where P1.id=~$id with collect(p) as ps call apoc.convert.toTree(ps)  "
             "yield value RETURN value LIMIT 100",
             {"id": id}).data()
 
     # return jsonify(result)
     data = result[0]['value']
-    return jsonify(transform(data))
+    return jsonify(find_path(data))
 
 @app.route('/get_person_name/<id>')
 def get_person_name(id):
@@ -85,7 +85,7 @@ def surround_movie_id(id):
 
     # return jsonify(result)
     data = result[0]['value']
-    return jsonify(transform(data))
+    return jsonify(find_path(data))
 
 
 @app.route('/surround_movie_name/<name>')
@@ -97,7 +97,7 @@ def surround_movie_name(name):
 
     # return jsonify(result)
     data = result[0]['value']
-    return jsonify(transform(data))
+    return jsonify(find_path(data))
 
 @app.route('/shortest_Path/<start_name>/<end_name>')
 def Shortest_Path(start_name, end_name):

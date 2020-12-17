@@ -4,7 +4,7 @@ import json
 from neo4j import GraphDatabase
 import pandas as pd
 
-from src.util_json import transform, find_path
+from src.util_json import  find_path
 
 driver = GraphDatabase.driver("bolt://admin.idevlab.cn:7687", auth=("neo4j", "neo5j"))
 
@@ -85,13 +85,7 @@ def genres_Movie_H(tx, genres):
     return result
 
 
-def network_Person():
-    with driver.session() as session:
-        result = session.run(
-            "match p=(P1:Person)-[:role]-()-[]-() where P1.name=~'.*邓超.*' with collect(p) as ps call apoc.convert.toTree(ps)  yield value RETURN value").data()
 
-    data = result[0]['value']
-    return transform(data)
 
 def shortestpath(tx,start_name,end_name):
     # 根据电影返回电影信息
