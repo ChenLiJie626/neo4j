@@ -24,7 +24,10 @@ def get_name_tag(data):
     try:
         name = data['name']
     except Exception as err:
-        name = data['tag']
+        try:
+            name = data['tag']
+        except Exception as err:
+            name = ""
         pass
     return name
 
@@ -37,7 +40,7 @@ categorie_all = ["genre_r", 'author', "director", "role", "have", "movie"]
 def get_id(data):
     id = None
     try:
-        id = data['id']
+        id = data['isd']
     except Exception as err:
         pass
     return id
@@ -57,13 +60,14 @@ def dfs(data, categorie):
         ],
         "info": get_summary(data)
     }
-
+    # print(node)
     nodes_path.append(node)
 
 
     for item in categorie_all:
         try:
             for data1 in data[item]:
+                print(data1)
                 dfs(data1, categorie)
                 c = c + 1
                 edge = {
@@ -75,7 +79,6 @@ def dfs(data, categorie):
                 edges_path.append(edge)
             break
         except Exception as err:
-            # print(err ,666)
             pass
 
 
