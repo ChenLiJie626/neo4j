@@ -60,14 +60,11 @@ def dfs(data, categorie):
         ],
         "info": get_summary(data)
     }
-    # print(node)
     nodes_path.append(node)
-
 
     for item in categorie_all:
         try:
             for data1 in data[item]:
-                print(data1)
                 dfs(data1, categorie)
                 c = c + 1
                 edge = {
@@ -77,7 +74,7 @@ def dfs(data, categorie):
                     "to": data1['_id']
                 }
                 edges_path.append(edge)
-            break
+
         except Exception as err:
             pass
 
