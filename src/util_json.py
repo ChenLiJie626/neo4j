@@ -40,7 +40,7 @@ categorie_all = ["genre_r", 'author', "director", "role", "have", "movie"]
 def get_id(data):
     id = None
     try:
-        id = data['isd']
+        id = data['id']
     except Exception as err:
         pass
     return id
