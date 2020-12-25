@@ -1,60 +1,53 @@
-
+c = 0
+cate_all = ["genre_r", 'author', "director", "role", "have", "movie"]
 
 
 def get_summary(data):
-    summary = None
-    try:
-        summary = data['summary']
-    except Exception as err:
-        pass
-    return summary
+    if 'summary' in data:
+        return data['summary']
+    return None
 
 
 def get_img(data):
-    img = None
-    try:
-        img = data['img']
-    except Exception as err:
-        pass
-    return img
+    if 'img' in data:
+        return data['img']
+    return None
 
 
-def get_name_tag(data):
-    name = None
+def get_name(data):
+    if '_type' not in data:
+        return None
+
+    data_type = data['_type']
     try:
-        name = data['name']
-    except Exception as err:
-        try:
+        if data_type == 'Movie' or data_type == 'Person':
+            name = data['name']
+        elif data_type == 't':
             name = data['tag']
-        except Exception as err:
-            name = ""
+        else:
+            name = data['id']
+
+    except Exception as err:
+        name = data['id']
         pass
     return name
 
 
-c = 0
-
-categorie_all = ["genre_r", 'author', "director", "role", "have", "movie"]
-
-
 def get_id(data):
-    id = None
-    try:
-        id = data['id']
-    except Exception as err:
-        pass
-    return id
+    if 'id' in data:
+        return data['id']
+    return None
 
-def dfs(data, categorie):
+
+def dfs(data):
     global c
 
-
     node = {
-        "label": get_name_tag(data),
+        "label": get_name(data),
         "value": 10,
         "image": get_img(data),
         "id": data['_id'],
-        "db_id":get_id(data),
+        "db_id": get_id(data),
         "categories": [
             data['_type']
         ],
@@ -62,21 +55,18 @@ def dfs(data, categorie):
     }
     nodes_path.append(node)
 
-    for item in categorie_all:
-        try:
-            for data1 in data[item]:
-                dfs(data1, categorie)
-                c = c + 1
+    for item in cate_all:
+        if item in data:
+            for subnode in data[item]:
+                c += 1
                 edge = {
                     "id": c,
                     "label": item,
                     "from": data['_id'],
-                    "to": data1['_id']
+                    "to": subnode['_id']
                 }
                 edges_path.append(edge)
-
-        except Exception as err:
-            pass
+                dfs(subnode)
 
 
 def find_path(data):
@@ -85,18 +75,12 @@ def find_path(data):
     nodes_path = []
     edges_path = []
 
-    dfs(data, None)
+    dfs(data)
+
     result = {
-        "categories": {
-            "Person": "人",
-            "role": "演员",
-            "t": "标签",
-            "genres": "类型",
-        },
         "data": {
             "nodes": nodes_path,
             "edges": edges_path
         }
     }
-    print(result)
     return result
